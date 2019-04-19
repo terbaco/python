@@ -7,6 +7,9 @@ from bullet import Bullet
 from time import sleep
 from scoreboard import Scoreboard
 from alien import Alien
+from enemy import Enemy_Base
+from enemy import Level2
+from enemy import Level3
 
 def check_keydown_event(event, ai_settings, screen, ship, bullets, stats):
     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
@@ -92,9 +95,14 @@ def random_direction():
     return direction
 
 def create_a_alien(aliens, ai_setting, screen, stats):
-    position = generate_alien_position(screen, ai_setting)
-    single_alien = Alien(ai_setting, screen, 1.0, 0.4, stats.game_level, random_direction(),  position)
+    while True:
+        position = generate_alien_position(screen, ai_setting)
+        single_alien = Alien(ai_setting, screen, 1.0, 0.4, stats.game_level, random_direction(),  position)
 
+        if single_alien.rect.right > screen.get_width():
+            del single_alien
+        else:
+            break
     aliens.add(single_alien)
     return
 
@@ -111,9 +119,15 @@ def update_aliens(ai_setting, stats, screen, ship, aliens, bullets):
             aliens.remove(sa)
         else:
             width = sa.rect.width
-
-    if len(aliens) <= 10:
-        create_a_alien(aliens, ai_setting, screen, stats)
+    if len(aliens) <= 12:
+        if stats.game_level == 1:
+            alien = Enemy_Base(ai_setting, screen, 1, stats.game_level)
+        elif stats.game_level == 2:
+            alien = Level2('images/level2.bmp', ai_setting, screen, 1.5, stats.game_level)
+        elif stats.game_level == 3:
+            alien = Level3('images/level3.bmp', ai_setting, screen, 2.0, stats.game_level)
+        aliens.add(alien)
+#        create_a_alien(aliens, ai_setting, screen, stats)
 
     if pygame.sprite.spritecollideany(ship, aliens):
         #        game_over(screen)
@@ -208,7 +222,7 @@ def check_play_button(ai_setting, screen, stats, play_button, ship, aliens, bull
 
         bullets.empty()
 
-        while len(aliens) <= 4:
+        while len(aliens) <= 12:
             create_a_alien(aliens, ai_setting, screen, stats)
         ship.center_ship()
 

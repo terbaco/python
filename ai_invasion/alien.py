@@ -19,8 +19,8 @@ class Alien(Sprite):
         self.setting_private = Settings()
         self.setting_private.alien_x_speed_factor_step *= x_factor
         self.setting_private.alien_y_speed_factor_step *= y_factor
-        self.setting_private.alien_x_speed_factor += (self.setting_private.alien_x_speed_factor_step * self.level_private)
-        self.setting_private.alien_y_speed_factor += (self.setting_private.alien_y_speed_factor_step * self.level_private)
+        self.setting_private.alien_x_speed_factor = (self.setting_private.alien_x_speed_factor_step * self.level_private)
+        self.setting_private.alien_y_speed_factor = (self.setting_private.alien_y_speed_factor_step * self.level_private)
 
         if position != None:
             self.rect.x = position[0]
@@ -46,22 +46,22 @@ class Alien(Sprite):
         y_moving = self.setting_private.alien_y_speed_factor * self.speed
 
         '''new x position'''
-        x_estimated = self.x + x_moving * self.direction
-        if x_estimated > self.screen.get_rect().width:
-            self.x = self.screen.get_rect().width
-            self.rect.x = self.x
+        right_estimated = self.rect.right + x_moving * self.direction
+        if right_estimated > self.screen.get_rect().width:
             self.direction *= -1
-        elif x_estimated < 0:
-            self.x = 0
-            self.rect.x = self.x
+            self.x += x_moving * self.direction
+            self.rect.x = int(self.x)
+        elif self.x + x_moving * self.direction < 0:
             self.direction *= -1
+            self.x = 0 + x_moving * self.direction
+            self.rect.x = int(self.x)
         else:
             self.x += (x_moving * self.direction)
-            self.rect.x = int(self.x + 0.5)
+            self.rect.x = int(self.x)
 
         '''new y position'''
         self.y = float( y_moving + self.y)
-        self.rect.y = int(self.y + 0.5)
+        self.rect.y = int(self.y)
 
     def blitme(self):
         self.screen.blit(self.image, self.rect)
