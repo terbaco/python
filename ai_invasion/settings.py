@@ -8,7 +8,7 @@ class Settings():
 
         self.bullet_speed_factor = 1.0
         self.bullet_speed_factor_step = 0.1
-        self.bullet_width = 3
+        self.bullet_width = 300
         self.bullet_height = 15
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 100
@@ -37,15 +37,12 @@ class Settings():
 
         self.enemy_amount = [5, 10, 15, 20, 25]
         self.enemy_amount_limit = 5
-        self.score_lvl = [10, 25, 45, 70, 100, 135, 175, 220, 270
-                          , 325, 385, 450, 520, 595, 675, 760, 850
-                          , 945, 1045, 1150]
 
     def reset_setting(self):
         self.alien_speed_factor = 1.0
         self.bullet_speed_factor = 1.0
         self.ship_speed_factor = 1.0
-
+        self.enemy_amount_limit = 5
 
 
 #        self.score = 0

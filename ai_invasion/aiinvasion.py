@@ -8,9 +8,7 @@ from ship import Ship
 import game_functions as gf
 from game_stats import GameStats
 from button import Button
-from scoreboard import Scoreboard
 from showbar import ShowBar
-from alien import Alien
 
 def run_game():
     pygame.init()

@@ -7,22 +7,15 @@ import random
 class Enemy_Base(Sprite):
     def __init__(self, aisettings, screen, hard, level=1):
         super().__init__()
-        #print("hard=" + str(hard) + "level= " + str(level))
         self.screen = screen
 
         self.screen_rect = screen.get_rect()
         self.ai_settings = aisettings
 
-#        self.image = pygame.image.load('images/alien.bmp')
-        #self.image = None
-
         self.level = level
         self.profile = Settings()
         self.x_moving = 0
         self.y_moving = 0
-
-#        self.rect.x = self.rect.width
-#        self.rect.y = self.rect.height
 
         self.direction = 0
         self.hard = hard
@@ -34,9 +27,7 @@ class Enemy_Base(Sprite):
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
 
-        '''set alien level'''
-#        self.speed_factor = 1.0
-
+        self.score_value = 10 * self.level ** 2
 
     def enemy_init(self):
         '''init direction'''
@@ -58,7 +49,6 @@ class Enemy_Base(Sprite):
         while self.direction == 0:
             self.direction = random.randint(-1, 1)
 
-        a = 9
 
     def random_direction(self):
         direction = 0
@@ -111,17 +101,17 @@ class Enemy_Base(Sprite):
 class Level1(Enemy_Base):
     def __init__(self, image_path, aisettings, screen, hard, level=1):
         self.image = pygame.image.load(image_path)
-        super(Level1, self).__init__(aisettings, screen, hard, level=1)
+        super(Level1, self).__init__(aisettings, screen, hard, level)
         self.hard *= 1.0
 
 class Level2(Enemy_Base):
     def __init__(self, image_path, aisettings, screen, hard, level=1):
         self.image = pygame.image.load(image_path)
-        super(Level2, self).__init__(aisettings, screen, hard, level=1)
+        super(Level2, self).__init__(aisettings, screen, hard, level)
         self.hard *= 1.1
 
 class Level3(Enemy_Base):
     def __init__(self, image_path, aisettings, screen, hard, level=1):
         self.image = pygame.image.load(image_path)
-        super(Level3, self).__init__(aisettings, screen, hard, level=1)
+        super(Level3, self).__init__(aisettings, screen, hard, level)
         self.hard *= 1.2

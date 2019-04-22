@@ -1,13 +1,10 @@
 import sys
 import random
-
+import math
 import pygame
 
 from bullet import Bullet
 from time import sleep
-from scoreboard import Scoreboard
-from alien import Alien
-from enemy import Enemy_Base
 from enemy import Level1
 from enemy import Level2
 from enemy import Level3
@@ -139,17 +136,24 @@ def check_bullet_alien_collisions(ai_setting, screen, stats, ship, aliens, bulle
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
     killed = len(collisions)
     if killed > 0:
-        stats.score = stats.score + killed
+        for alien in collisions.values():
+            stats.score += alien[0].score_value
         if stats.score > stats.highest_score:
             stats.highest_score = stats.score
         #print("Score: " + str(stats.score))
+
+        calc_level = int(math.sqrt(stats.score/100) + 1)
+        if calc_level > stats.game_level:
+            game_level_upgrade(ai_setting, stats, int(calc_level))
+'''
         list_score = ai_setting.score_lvl[0:]
         index = 0;
         while index < len(list_score) and list_score[index] < stats.score:
             index += 1
         game_level_upgrade(ai_setting, stats, index+1)
-        #print("ship speed is " + str(ai_setting.ship_speed_factor * ship.stats.game_level))
-#        print("collisions " + str(len(collisions)))
+'''
+        #print("ship speed is " + str(ai_setting.ship_speed_factor * ship.stats.game_level)
+        #print("collisions " + str(len(collisions)))
 
 def game_over(screen):
     #print("called")
@@ -191,7 +195,7 @@ def ship_hit(ai_setting, stats, screen, ship, aliens, bullets):
     aliens.empty()
     bullets.empty()
 
-    ship.center_ship()`
+    ship.center_ship()
 
     sleep(2)
     ai_setting.reset_setting()
@@ -222,7 +226,8 @@ def game_level_upgrade(ai_setting, stats, level):
     stats.set_game_level(level)
     index = int((level+4)/5)
     #print("Level = " + str(level) + "; index= " + str(index))
-    ai_setting.enemy_amount_limit = ai_setting.enemy_amount[index]
+    if index >= len(ai_setting.enemy_amount):
+        ai_setting.enemy_amount_limit = ai_setting.enemy_amount[len(ai_setting.enemy_amount)-1]
 
 def new_enemy(ai_setting, screen, stats, aliens):
     if stats.game_level == 1:
