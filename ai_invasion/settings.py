@@ -31,18 +31,22 @@ class Settings():
 #        self.game_level = 1.0
         self.game_level_step = 0.05
 
-        self.score_lvl = [1, 2, 4, 7, 10, 13, 17, 22, 27
-                            , 32, 38, 45, 52, 59, 67, 76, 85
-                            , 94, 104, 115]
+        #self.score_lvl = [1, 2, 4, 7, 10, 13, 17, 22, 27
+        #                    , 32, 38, 45, 52, 59, 67, 76, 85
+        #                    , 94, 104, 115]
+
+        self.enemy_amount = [5, 10, 15, 20, 25]
+        self.enemy_amount_limit = 5
+        self.score_lvl = [10, 25, 45, 70, 100, 135, 175, 220, 270
+                          , 325, 385, 450, 520, 595, 675, 760, 850
+                          , 945, 1045, 1150]
+
     def reset_setting(self):
         self.alien_speed_factor = 1.0
         self.bullet_speed_factor = 1.0
         self.ship_speed_factor = 1.0
-'''
-        self.score_lvl = [10, 25, 45, 70, 100, 135, 175, 220, 270
-                          , 325, 385, 450, 520, 595, 675, 760, 850
-                          , 945, 1045, 1150]
-'''
+
+
 
 #        self.score = 0
 #        self.highest_score = 0

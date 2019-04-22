@@ -7,7 +7,7 @@ import random
 class Enemy_Base(Sprite):
     def __init__(self, aisettings, screen, hard, level=1):
         super().__init__()
-        print("hard=" + str(hard) + "level= " + str(level))
+        #print("hard=" + str(hard) + "level= " + str(level))
         self.screen = screen
 
         self.screen_rect = screen.get_rect()
@@ -15,7 +15,6 @@ class Enemy_Base(Sprite):
 
 #        self.image = pygame.image.load('images/alien.bmp')
         #self.image = None
-        self.rect = self.image.get_rect()
 
         self.level = level
         self.profile = Settings()
@@ -25,14 +24,19 @@ class Enemy_Base(Sprite):
 #        self.rect.x = self.rect.width
 #        self.rect.y = self.rect.height
 
+        self.direction = 0
+        self.hard = hard
+        self.speed = 0.1
+
+        self.rect = self.image.get_rect()
+        self.enemy_init()
+
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
 
-        self.direction = 0
-        self.speed = 0.1
-        self.enemy_init()
         '''set alien level'''
 #        self.speed_factor = 1.0
+
 
     def enemy_init(self):
         '''init direction'''
@@ -49,9 +53,12 @@ class Enemy_Base(Sprite):
         self.rect.x = x
         self.rect.y = y
 
+
         '''init direction'''
         while self.direction == 0:
             self.direction = random.randint(-1, 1)
+
+        a = 9
 
     def random_direction(self):
         direction = 0
@@ -63,7 +70,6 @@ class Enemy_Base(Sprite):
         '''new x position'''
         '''Init speed according to level'''
         if self.x_moving == 0 and self.y_moving == 0:
-            self.hard = hard
             random_x = random.uniform(1, self.hard * self.level)
             random_y = random.uniform(1, self.hard * self.level)
             if random_x < random_y:
@@ -101,6 +107,12 @@ class Enemy_Base(Sprite):
             return True
         elif self.rect.left <= 0:
             return True
+
+class Level1(Enemy_Base):
+    def __init__(self, image_path, aisettings, screen, hard, level=1):
+        self.image = pygame.image.load(image_path)
+        super(Level1, self).__init__(aisettings, screen, hard, level=1)
+        self.hard *= 1.0
 
 class Level2(Enemy_Base):
     def __init__(self, image_path, aisettings, screen, hard, level=1):

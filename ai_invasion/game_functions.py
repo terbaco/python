@@ -8,6 +8,7 @@ from time import sleep
 from scoreboard import Scoreboard
 from alien import Alien
 from enemy import Enemy_Base
+from enemy import Level1
 from enemy import Level2
 from enemy import Level3
 
@@ -84,7 +85,7 @@ def generate_alien_position(screen, ai_setting):
     y = random.randint(1, int(height/ai_setting.alien_y_range))
 
     position = (x, y)
-    print('position=' + str(position))
+    #print('position=' + str(position))
 
     return position
 
@@ -110,6 +111,7 @@ def create_a_alien(aliens, ai_setting, screen, stats):
 def update_aliens(ai_setting, stats, screen, ship, aliens, bullets):
     aliens.update()
 
+    '''remove if it drop below the bottom'''
     width = -1
     bottom = 0
     for sa in aliens.copy():
@@ -119,22 +121,12 @@ def update_aliens(ai_setting, stats, screen, ship, aliens, bullets):
             aliens.remove(sa)
         else:
             width = sa.rect.width
-    if len(aliens) <= 12:
-        if stats.game_level == 1:
-            alien = Enemy_Base(ai_setting, screen, 1, stats.game_level)
-        elif stats.game_level == 2:
-            alien = Level2('images/level2.bmp', ai_setting, screen, 1.5, stats.game_level)
-        elif stats.game_level == 3:
-            alien = Level3('images/level3.bmp', ai_setting, screen, 2.0, stats.game_level)
-        aliens.add(alien)
-#        create_a_alien(aliens, ai_setting, screen, stats)
+
+    '''create new alien if the amount does now reach the limit'''
+    while len(aliens) <= ai_setting.enemy_amount_limit:
+        new_enemy(ai_setting, screen, stats, aliens)
 
     if pygame.sprite.spritecollideany(ship, aliens):
-        #        game_over(screen)
-        print(str(len(aliens)) + " aliens active")
-        print("alien's bottom is " + str(bottom))
-        print("ship's top is" + str(ship.rect.top))
-
         ship_hit(ai_setting, stats, screen, ship, aliens, bullets)
         check_aliens_bottom(ai_setting, stats, screen, ship, aliens, bullets)
 
@@ -150,17 +142,17 @@ def check_bullet_alien_collisions(ai_setting, screen, stats, ship, aliens, bulle
         stats.score = stats.score + killed
         if stats.score > stats.highest_score:
             stats.highest_score = stats.score
-        print("Score: " + str(stats.score))
+        #print("Score: " + str(stats.score))
         list_score = ai_setting.score_lvl[0:]
         index = 0;
         while index < len(list_score) and list_score[index] < stats.score:
             index += 1
-        game_level_upgrade(stats, index+1)
-        print("ship speed is " + str(ai_setting.ship_speed_factor * ship.stats.game_level))
+        game_level_upgrade(ai_setting, stats, index+1)
+        #print("ship speed is " + str(ai_setting.ship_speed_factor * ship.stats.game_level))
 #        print("collisions " + str(len(collisions)))
 
 def game_over(screen):
-    print("called")
+    #print("called")
     pygame.draw.rect(screen, (0,255,0), [100, 100, 50, 50])
     font = pygame.font.Font(None, 144)
     screen.fill((0,0,0))
@@ -191,15 +183,15 @@ def ship_hit(ai_setting, stats, screen, ship, aliens, bullets):
         pygame.mouse.set_visible((True))
 
     if stats.score > stats.highest_score:
-        print("New Record")
-        print("You hit " + str(stats.score) + " aliens!")
+        #print("New Record")
+        #print("You hit " + str(stats.score) + " aliens!")
         ai_setting.highest_score = stats.score
     stats.reset_game_level()
-    print("reset game level")
+    #print("reset game level")
     aliens.empty()
     bullets.empty()
 
-    ship.center_ship()
+    ship.center_ship()`
 
     sleep(2)
     ai_setting.reset_setting()
@@ -222,9 +214,32 @@ def check_play_button(ai_setting, screen, stats, play_button, ship, aliens, bull
 
         bullets.empty()
 
-        while len(aliens) <= 12:
-            create_a_alien(aliens, ai_setting, screen, stats)
+        while len(aliens) <= ai_setting.enemy_amount_limit :
+            new_enemy(ai_setting, screen, stats, aliens)
         ship.center_ship()
 
-def game_level_upgrade(stats, level):
+def game_level_upgrade(ai_setting, stats, level):
     stats.set_game_level(level)
+    index = int((level+4)/5)
+    #print("Level = " + str(level) + "; index= " + str(index))
+    ai_setting.enemy_amount_limit = ai_setting.enemy_amount[index]
+
+def new_enemy(ai_setting, screen, stats, aliens):
+    if stats.game_level == 1:
+        # create_a_alien(aliens, ai_setting, screen, stats)
+        alien = Level1('images/alien.bmp', ai_setting, screen, 1, stats.game_level)
+    elif stats.game_level == 2:
+        alien = Level2('images/level2.bmp', ai_setting, screen, 1.2, stats.game_level)
+    elif stats.game_level == 3:
+        alien = Level2('images/level3.bmp', ai_setting, screen, 1.4, stats.game_level)
+    elif stats.game_level == 4:
+        alien = Level2('images/level4.bmp', ai_setting, screen, 1.6, stats.game_level)
+    elif stats.game_level == 5:
+        alien = Level2('images/level5.bmp', ai_setting, screen, 1.8, stats.game_level)
+    elif stats.game_level == 6:
+        alien = Level2('images/level6.bmp', ai_setting, screen, 2.0, stats.game_level)
+    elif stats.game_level == 7:
+        alien = Level2('images/level7.bmp', ai_setting, screen, 2.2, stats.game_level)
+    else:
+        alien = Level3('images/level8.bmp', ai_setting, screen, 2.4, stats.game_level)
+    aliens.add(alien)
