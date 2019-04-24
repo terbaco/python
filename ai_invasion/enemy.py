@@ -27,7 +27,7 @@ class Enemy_Base(Sprite):
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
 
-        self.score_value = 10 * self.level ** 2
+        self.score_value = 10 * self.level * self.hard
 
     def enemy_init(self):
         '''init direction'''
@@ -44,11 +44,9 @@ class Enemy_Base(Sprite):
         self.rect.x = x
         self.rect.y = y
 
-
         '''init direction'''
         while self.direction == 0:
             self.direction = random.randint(-1, 1)
-
 
     def random_direction(self):
         direction = 0
@@ -57,20 +55,20 @@ class Enemy_Base(Sprite):
         return direction
 
     def update(self):
-        '''new x position'''
         '''Init speed according to level'''
         if self.x_moving == 0 and self.y_moving == 0:
             random_x = random.uniform(1, self.hard * self.level)
-            random_y = random.uniform(1, self.hard * self.level)
+            random_y = random.uniform(1, self.hard / 3 * self.level)
             if random_x < random_y:
                 rand = random_x
                 random_x = random_y
                 random_y = rand
-            x_factor = self.profile.alien_x_speed_factor_step * random_x * self.level
-            y_factor = self.profile.alien_y_speed_factor_step * random_y * self.level
+            x_factor = self.profile.alien_x_speed_factor_step * random_x * self.level / 2
+            y_factor = self.profile.alien_y_speed_factor_step * random_y * self.level / 3
             self.x_moving = x_factor * self.speed
             self.y_moving = y_factor * self.speed
 
+        '''new x position'''
         right_estimated = self.rect.right + self.x_moving * self.direction
         if right_estimated > self.screen.get_rect().width:
             self.direction *= -1
@@ -102,16 +100,16 @@ class Level1(Enemy_Base):
     def __init__(self, image_path, aisettings, screen, hard, level=1):
         self.image = pygame.image.load(image_path)
         super(Level1, self).__init__(aisettings, screen, hard, level)
-        self.hard *= 1.0
+    '''extended funtions'''
 
 class Level2(Enemy_Base):
     def __init__(self, image_path, aisettings, screen, hard, level=1):
         self.image = pygame.image.load(image_path)
         super(Level2, self).__init__(aisettings, screen, hard, level)
-        self.hard *= 1.1
+    '''extended funtions'''
 
 class Level3(Enemy_Base):
     def __init__(self, image_path, aisettings, screen, hard, level=1):
         self.image = pygame.image.load(image_path)
         super(Level3, self).__init__(aisettings, screen, hard, level)
-        self.hard *= 1.2
+    '''extended funtions'''

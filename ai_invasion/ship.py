@@ -23,6 +23,8 @@ class Ship():
         self.moving_down = False
         self.moving_up = False
 
+        self.fire = False
+
     def update(self):
         moving = self.ai_setting.ship_speed_factor +\
                  self.ai_setting.ship_speed_factor_step * self.stats.game_level

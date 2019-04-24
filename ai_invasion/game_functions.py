@@ -19,13 +19,14 @@ def check_keydown_event(event, ai_settings, screen, ship, bullets, stats):
     elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
         ship.moving_down = True
     elif event.key == pygame.K_SPACE:
+        #ship.fire = True
         fire_bullet(ai_settings, screen, ship, bullets)
     elif event.key == pygame.K_KP_PLUS:
         game_level_upgrade(stats, 1)
     elif event.key == pygame.K_KP_MINUS:
         game_level_upgrade(stats, -1)
 
-def check_keyup_event(event, ship):
+def check_keyup_event(event, ai_settings, screen, ship, bullets):
     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
         ship.moving_right = False
     elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
@@ -34,6 +35,9 @@ def check_keyup_event(event, ship):
         ship.moving_up = False
     elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
         ship.moving_down = False
+    elif event.key == pygame.K_SPACE:
+        #ship.fire = False
+        fire_bullet(ai_settings, screen, ship, bullets)
     elif event.key == pygame.K_ESCAPE:
         sys.exit()
 
@@ -44,7 +48,7 @@ def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets)
         elif event.type == pygame.KEYDOWN:
             check_keydown_event(event, ai_settings, screen, ship, bullets, stats)
         elif event.type == pygame.KEYUP:
-            check_keyup_event(event, ship)
+            check_keyup_event(event, ai_settings, screen, ship, bullets)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y)
@@ -92,19 +96,6 @@ def random_direction():
         direction = random.randint(-1, 1)
     return direction
 
-def create_a_alien(aliens, ai_setting, screen, stats):
-    while True:
-        position = generate_alien_position(screen, ai_setting)
-        single_alien = Alien(ai_setting, screen, 1.0, 0.4, stats.game_level, random_direction(),  position)
-
-        if single_alien.rect.right > screen.get_width():
-            del single_alien
-        else:
-            break
-    aliens.add(single_alien)
-    return
-
-
 def update_aliens(ai_setting, stats, screen, ship, aliens, bullets):
     aliens.update()
 
@@ -142,7 +133,7 @@ def check_bullet_alien_collisions(ai_setting, screen, stats, ship, aliens, bulle
             stats.highest_score = stats.score
         #print("Score: " + str(stats.score))
 
-        calc_level = int(math.sqrt(stats.score/100) + 1)
+        calc_level = int(math.pow(stats.score/100, float(1)/3) + 1)
         if calc_level > stats.game_level:
             game_level_upgrade(ai_setting, stats, int(calc_level))
 '''
@@ -152,31 +143,6 @@ def check_bullet_alien_collisions(ai_setting, screen, stats, ship, aliens, bulle
             index += 1
         game_level_upgrade(ai_setting, stats, index+1)
 '''
-        #print("ship speed is " + str(ai_setting.ship_speed_factor * ship.stats.game_level)
-        #print("collisions " + str(len(collisions)))
-
-def game_over(screen):
-    #print("called")
-    pygame.draw.rect(screen, (0,255,0), [100, 100, 50, 50])
-    font = pygame.font.Font(None, 144)
-    screen.fill((0,0,0))
-    text = font.render("Game Over", True, (255,255,255))
-    text_rect = text.get_rect()
-    text_x = screen.get_width() / 2 - text_rect.width / 2
-    text_y = screen.get_height() / 2 - text_rect.height / 2
-    screen.blit(text, [text_x, text_y])
-
-    pygame.display.flip()
-    pygame.time.wait(1000)
-
-    screen.fill((0,0,0))
-    font = pygame.font.Font(None, 72)
-    text = font.render("Restart soon...", True, (255, 255, 255))
-    screen.blit(text, [text_x, text_y])
-    pygame.display.flip()
-    pygame.time.wait(1000)
-
-#    sys.exit()
 
 def ship_hit(ai_setting, stats, screen, ship, aliens, bullets):
 
@@ -234,17 +200,17 @@ def new_enemy(ai_setting, screen, stats, aliens):
         # create_a_alien(aliens, ai_setting, screen, stats)
         alien = Level1('images/alien.bmp', ai_setting, screen, 1, stats.game_level)
     elif stats.game_level == 2:
-        alien = Level2('images/level2.bmp', ai_setting, screen, 1.2, stats.game_level)
+        alien = Level2('images/level2.bmp', ai_setting, screen, 1.1, stats.game_level)
     elif stats.game_level == 3:
-        alien = Level2('images/level3.bmp', ai_setting, screen, 1.4, stats.game_level)
+        alien = Level2('images/level3.bmp', ai_setting, screen, 1.1, stats.game_level)
     elif stats.game_level == 4:
-        alien = Level2('images/level4.bmp', ai_setting, screen, 1.6, stats.game_level)
+        alien = Level2('images/level4.bmp', ai_setting, screen, 1.1, stats.game_level)
     elif stats.game_level == 5:
-        alien = Level2('images/level5.bmp', ai_setting, screen, 1.8, stats.game_level)
+        alien = Level2('images/level5.bmp', ai_setting, screen, 1.1, stats.game_level)
     elif stats.game_level == 6:
-        alien = Level2('images/level6.bmp', ai_setting, screen, 2.0, stats.game_level)
+        alien = Level2('images/level6.bmp', ai_setting, screen, 1.1, stats.game_level)
     elif stats.game_level == 7:
-        alien = Level2('images/level7.bmp', ai_setting, screen, 2.2, stats.game_level)
+        alien = Level2('images/level7.bmp', ai_setting, screen, 1.1, stats.game_level)
     else:
-        alien = Level3('images/level8.bmp', ai_setting, screen, 2.4, stats.game_level)
+        alien = Level3('images/level8.bmp', ai_setting, screen, 1.1, stats.game_level)
     aliens.add(alien)

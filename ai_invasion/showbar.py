@@ -25,7 +25,7 @@ class ShowBar():
             self.score_rect.left = self.screen_rect.left + 20
             self.score_rect.top = 10
         elif str(position).lower() == 'righttop':
-            self.score_rect.right = self.screen_rect.right - 200
+            self.score_rect.right = self.screen_rect.right - 150
             self.score_rect.top = 10
         elif str(position).lower() == 'leftbottom':
             self.score_rect.left = self.screen_rect.left + 20
